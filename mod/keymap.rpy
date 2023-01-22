@@ -24,20 +24,20 @@ init 100 python:
 
             if metadata is None:
                 if len(_file.split("/")) == 2:
-                    message = ("{a=https://github.com/Friends-of-Monika/mas-wtf#-why-does-it-not-detect-the-submod-owning-a-topic}Could not detect submod that owns this topic{/a}, "
+                    message = ("Could not detect submod that owns this topic, "
                                "it {i}may be{/i} an official MAS topic because "
                                "its file is located directly in {i}game/{/i} "
                                "folder.")
 
                 elif (len(_file.split("/")) == 2 and
                       _file.lower().startswith("game/Submods")):
-                    message = ("{a=https://github.com/Friends-of-Monika/mas-wtf#-why-does-it-not-detect-the-submod-owning-a-topic}Could not detect submod that owns this topic{/a}, "
+                    message = ("Could not detect submod that owns this topic, "
                                "it is impossible to search for its header "
                                "because its file is located among other "
                                "submods in {i}game/Submods{/i} folder.")
 
                 else:
-                    message = ("{a=https://github.com/Friends-of-Monika/mas-wtf#-why-does-it-not-detect-the-submod-owning-a-topic}Could not detect what submod owns this topic{/a}, "
+                    message = ("Could not detect what submod owns this topic, "
                                "but it seems to be located in {{i}}{0}{{/i}}."
                                .format(_file))
 
@@ -46,7 +46,7 @@ init 100 python:
                 version = metadata["version"]
                 author = metadata["author"]
 
-                message = ("{{a=https://github.com/Friends-of-Monika/mas-wtf#-why-does-it-say-seems-and-might-why-so-uncertain}}It seems{{/a}} that this topic is owned by {{i}}{0} v{1} "
+                message = ("It seems that this topic is owned by {{i}}{0} v{1} "
                            "by {2}{{/i}} and it seems to be located in "
                            "{{i}}{3}{{/i}}.".format(submod, version, author,
                                                     _file))
@@ -56,10 +56,10 @@ init 100 python:
                                .format(ev.prompt))
 
                 if ev.random:
-                    topic_title += ("\nand it {a=https://github.com/Friends-of-Monika/mas-wtf#-why-does-it-say-seems-and-might-why-so-uncertain}{i}might{/i}{/a} be accessible from "
+                    topic_title += ("\nand it {i}might{/i} be accessible from "
                                     "{i}Repeat conversation{/i} menu.")
                 elif ev.pool:
-                    topic_title += ("\nand it {a=https://github.com/Friends-of-Monika/mas-wtf#-why-does-it-say-seems-and-might-why-so-uncertain}{i}might{/i}{/a} be accessible from "
+                    topic_title += ("\nand it {i}might{/i} be accessible from "
                                     "{i}Hey, [m_name]...{/i} menu.")
 
                 else:
