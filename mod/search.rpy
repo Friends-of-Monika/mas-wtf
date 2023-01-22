@@ -62,7 +62,7 @@ init python in _fom_wtf_search:
 
         metadata = scan_headers(_file)
         if metadata is None:
-            if _file.split("/") > 3:
+            if len(_file.split("/")) > 3:
                 _dir = "/".join(_file.split("/")[:-1])
                 for curr_dir, _, files in os.walk(_dir):
                     for _sib_file in files:
@@ -77,4 +77,4 @@ init python in _fom_wtf_search:
 
                     break
 
-        return (_file, None)
+        return _file, None
