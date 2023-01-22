@@ -71,5 +71,5 @@ init 100 python:
                 screens.msgbox(message)
 
 
-    config.keymap["_fom_wtf_detect"] = ["?"]
+    config.keymap["_fom_wtf_detect"] = ["w", "?"]
     config.underlay.append(renpy.Keymap(_fom_wtf_detect=_fom_hk_wtf_detect))
