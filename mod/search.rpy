@@ -79,4 +79,6 @@ init python in _fom_wtf_search:
                         if metadata is not None:
                             return _file, metadata
 
+                    break
+
         return (_file, None)
