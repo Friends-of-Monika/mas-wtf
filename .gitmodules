@@ -1,0 +1,3 @@
+[submodule "lib/unrpyc"]
+	path = lib/unrpyc
+	url = https://github.com/CensoredUsername/unrpyc.git
