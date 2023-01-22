@@ -33,5 +33,4 @@ init -100 python in _fom_wtf:
 
 
     basedir = os.path.join(renpy.config.basedir, *util.get_script_file(
-        fallback="game/Submods/Where is That From/mod.rpy"
-    ).split("/")[:-1])
+        fallback="game/Submods/Where is That From/mod.rpy").split("/")[:-1])

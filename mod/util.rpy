@@ -23,11 +23,13 @@ init -1000 python in _fom_wtf_util:
             relative -> bool, default False:
                 True if function should omit "game/" from detected path to make
                 it relative to "game/" folder.
+
         OUT:
             str:
                 Relative (to DDLC directory) path to the .rpy script file that
                 is currently being executed, or fallback value (or None if not
                 provided) if this function is unable to find appropriate path.
+
         RAISES:
             ValueError:
                 If fallback does not start with "game/" and relative is set to
@@ -36,10 +38,12 @@ init -1000 python in _fom_wtf_util:
             For consistency between platforms (and further usage in Ren'Py
             functions and related things) paths returned always have "/" as
             folder separator, even on Windows.
+
             Also note that even though it is possible for script file to be
             located not in "game/" folder for somewhere else, this function
             assumes it is located in "game/" and uses this assumption in its
             path correction logic.
+
             Proper functionality of this function cannot be guaranteed if called
             from eval() and alike dynamic code execution contexts.
         """

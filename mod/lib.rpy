@@ -14,5 +14,8 @@ init -99 python in _fom_wtf_lib:
     import sys
 
 
+    # UNRPYC lib path
     sys.path.append(os.path.join(mod.basedir, "lib", "unrpyc"))
+
+    # repoze_cache.py lib path
     sys.path.append(os.path.join(mod.basedir, "lib"))

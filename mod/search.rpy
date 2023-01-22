@@ -1,3 +1,9 @@
+# search.rpy contains logic for locating script file and submod metadata as
+# well as processing AST, both Ren'Py and Python.
+#
+# This file is part of Where is That From (see link below):
+# https://github.com/friends-of-monika/mas-wtf
+
 init python in _fom_wtf_search:
 
     import store
@@ -10,11 +16,50 @@ init python in _fom_wtf_search:
     from repoze_cache import lru_cache
 
 
-    def _isinstance0(v, klass):
+    def __isinstance(v, klass):
+        """
+        Conducts simplified 'instance of' check comparing only type names.
+        Due to how unrpyc operates, normal 'type(x) is y' checks aren't working
+        and the only way to somehow is comparing class names.
+
+        IN:
+            v -> any:
+                Value to check if is an instance of class.
+            klass -> type:
+                class to check for being an instance of.
+
+        OUT:
+            True:
+                If value is instance of specified class.
+            False:
+                If not.
+        """
+
         return v.__class__.__name__ == klass.__name__
+
 
     @lru_cache(maxsize=5000)
     def scan_headers(path):
+        """
+        Performs decompilation of .RPYC and embedded Python AST in order to
+        locate submod header in the file found at the specified path.
+
+        IN:
+            path -> str:
+                Path to .RPYC file to scan.
+
+        OUT:
+            dict:
+                Dictionary containing submod metadata (such as author, name,
+                version, description) and field _file containing path to the
+                file.
+            None:
+                If script file contains no submod header.
+
+        RAISES:
+            ValueError - in case file has no RPYC bytecode.
+        """
+
         with open(path, "rb") as f:
             try:
                 script_ast = unrpyc.read_ast_from_file(f)
@@ -22,17 +67,17 @@ init python in _fom_wtf_search:
                 raise ValueError("not a RenPy file")
 
         for node in script_ast:
-            if not _isinstance0(node, renpy.ast.Init):
+            if not __isinstance(node, renpy.ast.Init):
                 continue
 
             for stat in node.block:
-                if not _isinstance0(stat, renpy.ast.Python):
+                if not __isinstance(stat, renpy.ast.Python):
                     continue
 
                 py_ast = ast.parse(stat.code.source)
                 for py_stat in py_ast.body:
-                    if not (_isinstance0(py_stat, ast.Expr) and
-                            _isinstance0(py_stat.value, ast.Call) and
+                    if not (__isinstance(py_stat, ast.Expr) and
+                            __isinstance(py_stat.value, ast.Call) and
                             hasattr(py_stat.value.func, "id") and
                             py_stat.value.func.id == "Submod"):
                         continue
@@ -41,7 +86,7 @@ init python in _fom_wtf_search:
                     for keyword in py_stat.value.keywords:
                         if (keyword.arg in ["author", "name",
                                             "version", "description"] and
-                            _isinstance0(keyword.value, ast.Str)):
+                            __isinstance(keyword.value, ast.Str)):
                             metadata[keyword.arg] = keyword.value.s
 
                     return metadata
@@ -50,6 +95,25 @@ init python in _fom_wtf_search:
 
 
     def locate_topic():
+        """
+        Locates the script file that contains the topic currently executing then
+        performs scan for submod headers in it.
+
+        OUT:
+            tuple (file, metadata) - tuple of file path and submod metadata for
+                the current topic if the script file for it was located and
+                submod metadata was found.
+            tuple (file, None) - tuple of file path and None if script file was
+                located but submod metadata was not found.
+            None - if script file for the current topic was not located.
+
+        NOTE:
+            Unless current script file is in game/ or game/Submods/ folders (and
+            not in its own folder under game/Submods),  this function will
+            perform recursive scan of sibling and child .RPYC files for submod
+            headers. First header to be located is returned.
+        """
+
         _file = util.get_script_file()
         if _file is None:
             return None
