@@ -63,17 +63,13 @@ init python in _fom_wtf_search:
         metadata = scan_headers(_file)
         if metadata is None:
             if _file.split("/") > 3:
-                store.mas_submod_utils.submod_log.info("{!r}".format(_file.split("/")))
-
                 _dir = "/".join(_file.split("/")[:-1])
-                store.mas_submod_utils.submod_log.info("{!r}".format(_dir))
                 for curr_dir, _, files in os.walk(_dir):
                     for _sib_file in files:
                         if not _sib_file.endswith(".rpyc"):
                             continue
 
                         _sib_file = os.path.join(curr_dir, _sib_file)
-                        store.mas_submod_utils.submod_log.info("{!r}".format(_sib_file))
                         metadata = scan_headers(_sib_file)
 
                         if metadata is not None:
