@@ -60,9 +60,11 @@ init python in _fom_wtf_search:
         if not os.path.exists(_file):
             return None
 
+        is_structured = len(_file.split("/")) > 3
+
         metadata = scan_headers(_file)
         if metadata is None:
-            if len(_file.split("/")) > 3:
+            if is_structured:
                 _dir = "/".join(_file.split("/")[:-1])
                 for curr_dir, _, files in os.walk(_dir):
                     for _sib_file in files:
@@ -74,7 +76,5 @@ init python in _fom_wtf_search:
 
                         if metadata is not None:
                             return _file, metadata
-
-                    break
 
         return _file, None
