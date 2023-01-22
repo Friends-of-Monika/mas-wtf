@@ -15,3 +15,4 @@ init -99 python in _fom_wtf_lib:
 
 
     sys.path.append(os.path.join(mod.basedir, "lib", "unrpyc"))
+    sys.path.append(os.path.join(mod.basedir, "lib"))

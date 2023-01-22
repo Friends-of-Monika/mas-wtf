@@ -7,11 +7,13 @@ init python in _fom_wtf_search:
     import unrpyc, ast
     import zlib
 
+    from repoze_cache import lru_cache
+
 
     def _isinstance0(v, klass):
         return v.__class__.__name__ == klass.__name__
 
-
+    @lru_cache(maxsize=5000)
     def scan_headers(path):
         with open(path, "rb") as f:
             try:
