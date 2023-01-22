@@ -1,5 +1,5 @@
 <h1 align="center">🔍 Where is That From</h1>
-<h3 align="center">Easily find out what submod owns a topic</h3>
+<h3 align="center">Easily find out what submod owns a topic!</h3>
 <h5 align="center">Yes, it abbreviates to WTF.</h5>
 
 <p align="center">
@@ -23,6 +23,9 @@
 
 ## 🌟 Features
 
+A true must-have for everyone eager to try out new submods and those who have a
+ton of them and might need help finding where a certain topic comes from!~
+
 * Tells apart official topics and submod topics
 * Provides information on what the current topic name is
 * Displays owning submod name and script file location
@@ -33,6 +36,13 @@
 2. Download `where-is-that-from-VERSION.zip` file.
 3. Drag and drop `Submods` folder from it into your `game` folder.
 4. You're all set!~
+
+### 📚 How to use?
+
+Whenever you need to find out where is the topic you're currently going through
+is located and what submod owns it, press the `W` key or `?` (question mark,
+might require holding down `Shift ⬆` key) and the popup dialog window will tell
+you all the available info.
 
 ## 💬 Join our Discord
 
