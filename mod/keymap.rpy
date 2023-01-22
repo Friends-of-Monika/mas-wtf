@@ -15,11 +15,19 @@ init 100 python:
             _file, metadata = res
 
             if metadata is None:
-                if len(_file.split("/")) == 0:
+                if len(_file.split("/")) == 2:
                     screens.msgbox("Could not detect submod that owns this "
-                                   "topic, it may be an official MAS topic as "
-                                   "its file is located directly in "
+                                   "topic, it may be an official MAS topic "
+                                   "because its file is located directly in "
                                    "{i}game/{/i} folder.")
+
+                elif (len(_file.split("/")) == 2 and
+                      _file.lower().startswith("game/Submods")):
+                    screens.msgbox("Could not detect submod that owns this "
+                                   "topic, it is impossible to search for its "
+                                   "header because its file is located among "
+                                   "other submods in {i}game/Submods{/i} "
+                                   "folder.")
 
                 else:
                     screens.msgbox("Could not detect what submod owns this "

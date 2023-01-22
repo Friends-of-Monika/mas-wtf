@@ -37,7 +37,7 @@ init python in _fom_wtf_search:
                             py_stat.value.func.id == "Submod"):
                         continue
 
-                    metadata = dict()
+                    metadata = {"_file": path}
                     for keyword in py_stat.value.keywords:
                         if (keyword.arg in ["author", "name",
                                             "version", "description"] and
@@ -62,7 +62,7 @@ init python in _fom_wtf_search:
 
         metadata = scan_headers(_file)
         if metadata is None:
-            if _file.split("/") > 2:
+            if _file.split("/") > 3:
                 store.mas_submod_utils.submod_log.info("{!r}".format(_file.split("/")))
 
                 _dir = "/".join(_file.split("/")[:-1])
