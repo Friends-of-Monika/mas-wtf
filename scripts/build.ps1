@@ -21,10 +21,7 @@ New-Item -ItemType Directory -Force -Path $Mod | Out-Null
 $Mod = "$Mod\$Name"
 
 Copy-Item -Recurse $Dir\mod $Mod
-New-Item -ItemType Directory -Force -Path $Mod\lib\unrpyc | Out-Null
-Copy-Item -Recurse $Dir\lib\unrpyc\decompiler $Mod\lib\unrpyc\decompiler
-Copy-Item $Dir\lib\unrpyc\*.py $Mod\lib\unrpyc
-Copy-Item $Dir\lib\unrpyc\LICENSE.txt $Mod\lib\unrpyc
+Copy-Item -Recurse $Dir\lib $Mod\lib
 
 Compress-Archive -Update -Path $Temp\game -DestinationPath $Build\$Package-$Version.zip
 Remove-Item -Recurse $Temp
