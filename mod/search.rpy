@@ -31,6 +31,7 @@ init python in _fom_wtf_search:
                 for py_stat in py_ast.body:
                     if not (_isinstance0(py_stat, ast.Expr) and
                             _isinstance0(py_stat.value, ast.Call) and
+                            hasattr(py_stat.value.func, "id") and
                             py_stat.value.func.id == "Submod"):
                         continue
 

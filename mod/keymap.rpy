@@ -3,6 +3,9 @@ init 100 python:
         from store import _fom_wtf_search as search
         from store import _fom_wtf_screens as screens
 
+        if mas_globals.this_ev is None:
+            return
+
         res = search.locate_topic()
 
         if res is None:
