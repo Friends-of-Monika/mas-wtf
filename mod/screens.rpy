@@ -25,16 +25,18 @@ init python in _fom_wtf_screens:
             if metadata is None:
                 if len(_file.split("/")) == 2:
                     message = ("Could not detect submod that owns this topic, "
-                               "it {i}may be{/i} an official MAS topic because "
-                               "its file is located directly in {i}game/{/i} "
-                               "folder.")
+                               "it {{i}}may be{{/i}} an official MAS topic "
+                               "because its file is located directly in "
+                               "{{i}}game/{{/i}} folder: {{i}}{0}{{/i}}"
+                               .format(_file))
 
                 elif (len(_file.split("/")) == 2 and
                       _file.lower().startswith("game/Submods")):
                     message = ("Could not detect submod that owns this topic, "
                                "it is impossible to search for its header "
                                "because its file is located among other "
-                               "submods in {i}game/Submods{/i} folder.")
+                               "submods in {{i}}game/Submods{{/i}} folder: {0}"
+                               .format(_file))
 
                 else:
                     message = ("Could not detect what submod owns this topic, "
