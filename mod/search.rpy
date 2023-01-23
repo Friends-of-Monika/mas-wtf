@@ -66,35 +66,51 @@ init python in _fom_wtf_search:
 
         with open(path, "rb") as f:
             try:
+                # Use UNRPYC to read Ren'Py AST from the .RPYC file
                 script_ast = unrpyc.read_ast_from_file(f)
             except zlib.error:
+                # .RPYC files are GZip compressed, hence the error
                 raise ValueError("not a RenPy file")
 
         for node in script_ast:
+            # Looking for 'init python' nodes only
             if not __isinstance(node, renpy.ast.Init):
                 continue
 
             for stat in node.block:
+                # Init blocks may be Ren'Py inits, we only need Python
                 if not __isinstance(stat, renpy.ast.Python):
                     continue
 
+                # Parse Python AST
                 py_ast = ast.parse(stat.code.source)
                 for py_stat in py_ast.body:
+                    # Look for call expressions like Submod(...) which are
+                    # submod header declarations
                     if not (__isinstance(py_stat, ast.Expr) and
                             __isinstance(py_stat.value, ast.Call) and
                             hasattr(py_stat.value.func, "id") and
                             py_stat.value.func.id == "Submod"):
                         continue
 
+                    # Loop over keyword parameters passed to it
+                    # TODO: See if there is a possibility of them being
+                    # positional, in which case account for that too
                     metadata = {"_file": path}
                     for keyword in py_stat.value.keywords:
+                        # Only author, name, version and description are
+                        # strings, ignore all the rest and those of them
+                        # that aren't simply string literals
                         if (keyword.arg in ["author", "name",
                                             "version", "description"] and
                             __isinstance(keyword.value, ast.Str)):
+                            # Save the value of string literal
                             metadata[keyword.arg] = keyword.value.s
 
+                    # Return first found header
                     return metadata
 
+        # No submod headers found
         return None
 
 
@@ -122,27 +138,38 @@ init python in _fom_wtf_search:
         if _file is None:
             return None
 
+        # Only working with .RPYC
         if _file.endswith(".rpy"):
             _file += "c"
 
+        # If the file we look for doesn't exist we cannot work with it obviously
         if not os.path.exists(_file):
             return None
 
+        # Structured are those submods that are located under game/Submods/ in
+        # their own folder
         is_structured = len(_file.split("/")) > 3
 
+        # Try to scan header from the script file itself, if not found and
+        # submod is well structured try to look around for them recursively
         metadata = scan_headers(_file)
         if metadata is None:
             if is_structured:
+                # Get folder of the script file and walk around it
                 _dir = "/".join(_file.split("/")[:-1])
                 for curr_dir, _, files in os.walk(_dir):
                     for _sib_file in files:
+                        # Only need .RPYC files
                         if not _sib_file.endswith(".rpyc"):
                             continue
 
+                        # Join file paths and scan for headers in it
                         _sib_file = os.path.join(curr_dir, _sib_file)
                         metadata = scan_headers(_sib_file)
 
+                        # If file contains a valid header return it right away
                         if metadata is not None:
                             return _file, metadata
 
+        # Or else just return the script file
         return _file, None
