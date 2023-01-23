@@ -72,7 +72,8 @@ init -1000 python in _fom_wtf_util:
         # 2. Check if path starts with game/ folder.
         # 3. While it does not, drop first i+1 (initially i=0) parts from it
         #    and prepend it with game/.
-        # 4a. If new path from 3. exists, we most likely have got the right path.
+        # 4a. If new path from 3. exists, we most likely have got the right
+        #     path.
         # 4b. If new path from 3. doesn't exist, increment i by 1 and drop more
         #     path components from the original path and repeat 3.
         parts = path.split("/")  # (1.)
@@ -82,7 +83,8 @@ init -1000 python in _fom_wtf_util:
                 parts_proc.insert(0, "game")
 
                 rel_path = "/".join(parts_proc)
-                if os.path.exists(os.path.join(renpy.config.renpy_base, rel_path)):
+                if os.path.exists(os.path.join(renpy.config.renpy_base,
+                                               rel_path)):
                     result = rel_path.replace("\\", "/")  # (4a.)
                     if relative:
                         # Omit "game/" prefix (5 chars.)
@@ -92,8 +94,10 @@ init -1000 python in _fom_wtf_util:
                 # else (4b.)
 
             if fallback is not None and relative:
-                return fallback[5:]  # Omit game/ prefix, its presence is checked above.
-            return fallback.replace("\\", "/") if fallback is not None else None
+                return fallback[5:]  # Omit game/ prefix, its presence is
+                                     # checked above.
+            return (fallback.replace("\\", "/") if fallback is not None
+                    else None)
 
         else:
             if relative:
