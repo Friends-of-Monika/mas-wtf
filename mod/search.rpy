@@ -171,5 +171,10 @@ init python in _fom_wtf_search:
                         if metadata is not None:
                             return _file, metadata
 
-        # Or else just return the script file
+        # If .RPY source file exists for this .RPYC, return path to original
+        # file (.RPY not .RPYC) for user's reading/editing convenience
+        if os.path.exists(_file[:-1]):
+            return _file[:-1], None
+
+        # Or else return bytecode file
         return _file, None
