@@ -94,8 +94,9 @@ init python in _fom_wtf_screens:
                     topic_title += ("\nand it {i}might{/i} be accessible from "
                                     "{i}Hey, [m_name]...{/i} menu.")
 
-                # Else just close the message with a dot
-                else:
+                # Else just close the message with a dot if topic prompt
+                # doesn't end with punctuation
+                elif ev.prompt[-1] not in (".!?"):
                     topic_title += "."
 
                 # Show message with space between submod info and topic info
