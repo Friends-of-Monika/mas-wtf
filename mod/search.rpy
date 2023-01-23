@@ -20,7 +20,7 @@ init python in _fom_wtf_search:
         """
         Conducts simplified 'instance of' check comparing only type names.
         Due to how unrpyc operates, normal 'type(x) is y' checks aren't working
-        and the only way to somehow is comparing class names.
+        and the only way to somehow check instance of is comparing class names.
 
         IN:
             v -> any:
