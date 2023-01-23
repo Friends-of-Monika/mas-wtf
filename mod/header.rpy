@@ -9,7 +9,7 @@ init -990 python in mas_submod_utils:
         author="Friends of Monika",
         name="Where is That From",
         description="Easily find out what submod owns a topic",
-        version="1.0.0"
+        version="1.0.1"
     )
 
 
