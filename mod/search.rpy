@@ -38,7 +38,7 @@ init python in _fom_wtf_search:
         return v.__class__.__name__ == klass.__name__
 
 
-    @lru_cache(maxsize=5000)
+    @lru_cache(maxsize=50)
     def scan_headers(path):
         """
         Performs decompilation of .RPYC and embedded Python AST in order to
@@ -55,6 +55,10 @@ init python in _fom_wtf_search:
                 file.
             None:
                 If script file contains no submod header.
+
+        NOTE:
+            The result of this function execution is LRU-cached with maximum
+            amount of cached results of 50 entries.
 
         RAISES:
             ValueError - in case file has no RPYC bytecode.
