@@ -79,7 +79,7 @@ can at least tell what file contains the topic you're currently looking at.
 
 ## 💬 Join our Discord
 
-We're up to chat! Come join submod author's Discord server [here][8]].
+We're up to chat! Come join submod author's Discord server [here][8].
 
 [![Discord server invitation][10]][8]
 
