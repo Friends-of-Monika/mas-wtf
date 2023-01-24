@@ -9,6 +9,9 @@
   <a href="https://github.com/friends-of-monika/mas-wtf/releases">
     <img alt="Release downloads" src="https://img.shields.io/github/downloads/friends-of-monika/mas-wtf/total">
   </a>
+  <a href="https://www.reddit.com/r/MASFandom/comments/10jg4bc/where_is_that_from_submod_release_introduction">
+    <img alt="Reddit badge" src="https://img.shields.io/badge/dynamic/json?label=%F0%9D%97%8B%2FMASFandom&query=%24[0].data.children[0].data.score&suffix=%20upvotes&url=https%3A%2F%2Fwww.reddit.com%2Fr%2FMASFandom%2Fcomments%2F10jg4bc%2Fwhere_is_that_from_submod_release_introduction.json&style=social&logo=reddit">
+  </a>
   <a href="https://github.com/friends-of-monika/mas-wtf/blob/main/LICENSE.txt">
     <img alt="MIT license badge" src="https://img.shields.io/badge/License-MIT-lightgrey.svg">
   </a>
