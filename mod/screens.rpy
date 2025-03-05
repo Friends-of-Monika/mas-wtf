@@ -16,8 +16,9 @@ init python in _fom_wtf_screens:
         Shows a simple info dialog window with OK button.
         """
 
+        text_escaped = renpy.substitute("[msg!q]", {"msg": text})
         renpy.invoke_in_new_context(renpy.call_screen, "dialog",
-                                    message=text, ok_action=Return())
+                                    message=text_escaped, ok_action=Return())
 
 
     def topic_info(ev, res):
