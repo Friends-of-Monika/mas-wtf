@@ -1,14 +1,9 @@
-# util.rpy contains miscellaneous utility functions and classes that can be
-# reused in the rest of the Where is That From codebase.
-#
 # This file is part of Where is That From (see link below):
 # https://github.com/friends-of-monika/mas-wtf
 
 
 init -1000 python in _fom_wtf_util:
-
     import os
-
 
     def get_script_file(fallback=None, relative=False):
         """

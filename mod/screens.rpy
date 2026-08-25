@@ -1,24 +1,59 @@
-# screens.rpy contains convenience functions for working with MAS screens
-# and code that performs GUI related tasks such as dialog window showing.
-#
 # This file is part of Where is That From (see link below):
 # https://github.com/friends-of-monika/mas-wtf
 
 init python in _fom_wtf_screens:
-
-    import store
     from store import Return
+    import store
 
+    # True while a dialog of ours is on screen. The keymap that brings us here
+    # lives in config.underlay and therefore keeps firing inside the context
+    # invoke_in_new_context() spawns below, so without this guard every further
+    # keypress would stack yet another dialog on top of the visible one.
+    _showing = False
+
+    def __escape(text):
+        """
+        Escapes Ren'Py interpolation and text tag syntax in the given string so
+        that it is rendered verbatim.
+
+        Values we splice into dialog messages (script paths, submod metadata,
+        topic prompts) are arbitrary text, and the dialog screen runs them
+        through Ren'Py text substitution. Left alone, a submod living in a
+        folder such as "Virtual Love [Submod]" makes Ren'Py look up a variable
+        named Submod and raise NameError; see issue #3.
+
+        IN:
+            text -> str:
+                Text to escape.
+
+        OUT:
+            str:
+                The same text with [ and { doubled.
+        """
+
+        return text.replace("{", "{{").replace("[", "[[")
 
     def msgbox(text):
         """
         Convenience function for calling dialog screen with specified text.
         Shows a simple info dialog window with OK button.
+
+        Does nothing if a dialog shown by this function is already visible.
         """
 
-        renpy.invoke_in_new_context(renpy.call_screen, "dialog",
-                                    message=text, ok_action=Return())
+        global _showing
+        if _showing:
+            return
 
+        _showing = True
+        try:
+            renpy.invoke_in_new_context(
+                renpy.call_screen, "dialog",
+                message=text,
+                ok_action=Return()
+            )
+        finally:
+            _showing = False
 
     def topic_info(ev, res):
         """
@@ -27,7 +62,7 @@ init python in _fom_wtf_screens:
         IN:
             ev -> Event:
                 MAS event object for the current topic.
-            res -> 2-tuple or None, see search.locate_topic() output info:
+            res -> 3-tuple or None, see search.locate_topic() output info:
                 Output of search.locate_topic() with necessary info about topic.
         """
 
@@ -37,62 +72,93 @@ init python in _fom_wtf_screens:
             msgbox("Could not locate file that owns this topic.")
 
         else:
-            # Obtain file path and metadata (may be None) from result parameter
-            _file, metadata = res
+            # Obtain file path, line number (may be None) and metadata (may be
+            # None) from result parameter
+            _file, _line, metadata = res
+
+            # Point at the exact line when we know it, at the file alone
+            # otherwise
+            if _line is None:
+                location = __escape(_file)
+            else:
+                location = "{0}:{1}".format(__escape(_file), _line)
 
             if metadata is None:
                 # If no metadata found and file path has just one slash,
                 # therefore it must be located directly in game/
                 if len(_file.split("/")) == 2:
-                    message = ("Could not detect submod that owns this topic, "
-                               "it {{i}}may be{{/i}} an official MAS topic "
-                               "because its file is located directly in "
-                               "{{i}}game/{{/i}} folder: {{i}}{0}{{/i}}"
-                               .format(_file))
+                    message = (
+                        _("Could not detect submod that owns this topic, "
+                            "it {{i}}may be{{/i}} an official MAS topic "
+                            "because its file is located directly in "
+                            "{{i}}game/{{/i}} folder: {{i}}{0}{{/i}}")
+                        .format(location)
+                    )
 
                 # Otherwise, check if it's in game/Submods
                 elif (len(_file.split("/")) > 2 and
-                      _file.lower().startswith("game/Submods")):
-                    message = ("Could not detect submod that owns this topic, "
-                               "it is impossible to search for its header "
-                               "because its file is located among other "
-                               "submods in {{i}}game/Submods{{/i}} folder: {0}"
-                               .format(_file))
+                    _file.lower().startswith("game/Submods")):
+                    message = (
+                        _("Could not detect submod that owns this topic, "
+                            "it is impossible to search for its header "
+                            "because its file is located among other "
+                            "submods in {{i}}game/Submods{{/i}} folder: {0}")
+                        .format(location)
+                    )
 
                 # Or else fall back to some generic message
                 else:
-                    message = ("Could not detect what submod owns this topic, "
-                               "but it seems to be located in {{i}}{0}{{/i}}."
-                               .format(_file))
+                    message = (
+                        _("Could not detect what submod owns this topic, "
+                            "but it seems to be located in {{i}}{0}{{/i}}.")
+                        .format(location)
+                    )
 
             else:
                 # Assign metadata to vars for brevity
-                submod = metadata["name"]
-                version = metadata["version"]
-                author = metadata["author"]
+                submod = __escape(metadata["name"])
+                version = __escape(metadata["version"])
+                author = __escape(metadata["author"])
 
                 # Make up an informative message about topic and owning submod
-                message = ("It seems that this topic is owned by {{i}}{0} v{1} "
-                           "by {2}{{/i}} and it seems to be located in "
-                           "{{i}}{3}{{/i}}.".format(submod, version, author,
-                                                    _file))
+                message = (
+                    _("It seems that this topic is owned by {{i}}{0} v{1} "
+                        "by {2}{{/i}} and it seems to be located in "
+                        "{{i}}{3}{{/i}}.")
+                    .format(submod, version, author, location)
+                )
 
             # Check if topic has event prompt and it's not empty (if it's empty,
             # it is the same as event label)
             if bool(ev.prompt) and ev.prompt != ev.eventlabel:
+                # Topic prompts routinely contain [player] and friends and are
+                # meant to interpolate, so resolve them first -- but fall back
+                # to the prompt as authored should it reference anything that
+                # isn't defined, rather than taking the whole dialog down
+                try:
+                    prompt = renpy.substitute(ev.prompt)
+                except Exception:
+                    prompt = ev.prompt
+
                 # Construct a message with info
-                topic_title = ("The topic is called {{i}}{0}{{/i}}"
-                               .format(ev.prompt))
+                topic_title = (
+                    _("The topic is called {{i}}{0}{{/i}}")
+                    .format(__escape(prompt))
+                )
 
                 # If topic is random, tell so
                 if ev.random:
-                    topic_title += ("\nand it {i}might{/i} be accessible from "
-                                    "{i}Repeat conversation{/i} menu.")
+                    topic_title += (
+                        _("\nand it {i}might{/i} be accessible from "
+                            "{i}Repeat conversation{/i} menu.")
+                    )
 
                 # If topic is pooled, tell so
                 elif ev.pool:
-                    topic_title += ("\nand it {i}might{/i} be accessible from "
-                                    "{i}Hey, [m_name]...{/i} menu.")
+                    topic_title += (
+                        _("\nand it {i}might{/i} be accessible from "
+                            "{i}Hey, [m_name]...{/i} menu.")
+                    )
 
                 # Else just close the message with a dot if topic prompt
                 # doesn't end with punctuation
