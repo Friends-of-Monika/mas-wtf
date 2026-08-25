@@ -5,16 +5,33 @@ init python in _fom_wtf_screens:
     from store import Return
     import store
 
+    # True while a dialog of ours is on screen. The keymap that brings us here
+    # lives in config.underlay and therefore keeps firing inside the context
+    # invoke_in_new_context() spawns below, so without this guard every further
+    # keypress would stack yet another dialog on top of the visible one.
+    _showing = False
+
     def msgbox(text):
         """
         Convenience function for calling dialog screen with specified text.
         Shows a simple info dialog window with OK button.
+
+        Does nothing if a dialog shown by this function is already visible.
         """
-        renpy.invoke_in_new_context(
-            renpy.call_screen, "dialog",
-            message=text,
-            ok_action=Return()
-        )
+
+        global _showing
+        if _showing:
+            return
+
+        _showing = True
+        try:
+            renpy.invoke_in_new_context(
+                renpy.call_screen, "dialog",
+                message=text,
+                ok_action=Return()
+            )
+        finally:
+            _showing = False
 
     def topic_info(ev, res):
         """
