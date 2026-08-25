@@ -40,7 +40,7 @@ init python in _fom_wtf_screens:
         IN:
             ev -> Event:
                 MAS event object for the current topic.
-            res -> 2-tuple or None, see search.locate_topic() output info:
+            res -> 3-tuple or None, see search.locate_topic() output info:
                 Output of search.locate_topic() with necessary info about topic.
         """
 
@@ -50,8 +50,16 @@ init python in _fom_wtf_screens:
             msgbox("Could not locate file that owns this topic.")
 
         else:
-            # Obtain file path and metadata (may be None) from result parameter
-            _file, metadata = res
+            # Obtain file path, line number (may be None) and metadata (may be
+            # None) from result parameter
+            _file, _line, metadata = res
+
+            # Point at the exact line when we know it, at the file alone
+            # otherwise
+            if _line is None:
+                location = _file
+            else:
+                location = "{0}:{1}".format(_file, _line)
 
             if metadata is None:
                 # If no metadata found and file path has just one slash,
@@ -62,7 +70,7 @@ init python in _fom_wtf_screens:
                             "it {{i}}may be{{/i}} an official MAS topic "
                             "because its file is located directly in "
                             "{{i}}game/{{/i}} folder: {{i}}{0}{{/i}}")
-                        .format(_file)
+                        .format(location)
                     )
 
                 # Otherwise, check if it's in game/Submods
@@ -73,7 +81,7 @@ init python in _fom_wtf_screens:
                             "it is impossible to search for its header "
                             "because its file is located among other "
                             "submods in {{i}}game/Submods{{/i}} folder: {0}")
-                        .format(_file)
+                        .format(location)
                     )
 
                 # Or else fall back to some generic message
@@ -81,7 +89,7 @@ init python in _fom_wtf_screens:
                     message = (
                         _("Could not detect what submod owns this topic, "
                             "but it seems to be located in {{i}}{0}{{/i}}.")
-                        .format(_file)
+                        .format(location)
                     )
 
             else:
@@ -95,7 +103,7 @@ init python in _fom_wtf_screens:
                     _("It seems that this topic is owned by {{i}}{0} v{1} "
                         "by {2}{{/i}} and it seems to be located in "
                         "{{i}}{3}{{/i}}.")
-                    .format(submod, version, author, _file)
+                    .format(submod, version, author, location)
                 )
 
             # Check if topic has event prompt and it's not empty (if it's empty,

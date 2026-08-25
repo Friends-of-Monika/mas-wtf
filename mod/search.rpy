@@ -99,38 +99,41 @@ init python in _fom_wtf_search:
                 MAS event object to locate.
 
         OUT:
-            tuple (file, metadata) - tuple of file path and submod metadata for
-                the given topic if the script file for it was located and the
-                owning submod was found.
-            tuple (file, None) - tuple of file path and None if script file was
-                located but no submod claims it.
+            tuple (file, line, metadata) - tuple of file path, line number and
+                submod metadata for the given topic if the script file for it
+                was located and the owning submod was found.
+            tuple (file, line, None) - tuple of file path, line number and None
+                if script file was located but no submod claims it.
             None - if script file for the given topic was not located.
+
+            Line number is None whenever it could not be determined; file path
+            is never None in any of the tuples above.
 
         NOTE:
             Script file location comes from _fom_wtf_metadata, which records it
             at the moment the Event object is constructed. When that record is
             missing (e.g. the event was created dynamically at runtime) this
             function falls back to detecting the currently executing script
-            file, which is considerably less reliable.
+            file, which is considerably less reliable and yields no line.
         """
 
         source = meta.get_source(ev)
         if source is not None and source[0] is not None:
-            _file = source[0]
+            _file, _line = source
 
         else:
             # No recorded declaration site, guess from current script location
-            _file = util.get_script_file()
+            _file, _line = util.get_script_file(), None
 
         if _file is None:
             return None
 
         found = __find_submod(_file)
         if found is None:
-            return _file, None
+            return _file, _line, None
 
         submod, header_file = found
-        return _file, {
+        return _file, _line, {
             "_file": header_file,
             "name": submod.name,
             "author": submod.author,
