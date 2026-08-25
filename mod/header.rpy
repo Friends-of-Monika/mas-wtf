@@ -5,8 +5,11 @@ init -990 python in mas_submod_utils:
     Submod(
         author="Friends of Monika",
         name="Where is That From",
-        description="Easily find out what submod owns a topic",
-        version="1.0.1"
+        description=_("Easily find out what submod owns a topic"),
+        version="1.1.0",
+        version_updates={
+            "friends_of_monika_where_is_that_from_v1_0_1": "friends_of_monika_where_is_that_from_v1_1_0"
+        }
     )
 
 init -989 python:
@@ -23,5 +26,7 @@ init -100 python in _fom_wtf:
     import store
     import os
 
-    basedir = os.path.join(renpy.config.basedir, *util.get_script_file(
-        fallback="game/Submods/Where is That From/mod.rpy").split("/")[:-1])
+    basedir = os.path.join(
+        renpy.config.basedir,
+        *util.get_script_file(fallback="game/Submods/Where is That From/mod.rpy").split("/")[:-1]
+    )

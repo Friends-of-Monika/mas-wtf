@@ -17,7 +17,7 @@ init 100 python:
 
         # Perform topic location routine and pass output to screen (along with
         # event reference)
-        res = search.locate_topic()
+        res = search.locate_topic(ev)
         screens.topic_info(ev, res)
 
     # Assign W and ? keys to the keypress callback _fom_hk_wtf_detect
