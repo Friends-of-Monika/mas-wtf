@@ -11,6 +11,28 @@ init python in _fom_wtf_screens:
     # keypress would stack yet another dialog on top of the visible one.
     _showing = False
 
+    def __escape(text):
+        """
+        Escapes Ren'Py interpolation and text tag syntax in the given string so
+        that it is rendered verbatim.
+
+        Values we splice into dialog messages (script paths, submod metadata,
+        topic prompts) are arbitrary text, and the dialog screen runs them
+        through Ren'Py text substitution. Left alone, a submod living in a
+        folder such as "Virtual Love [Submod]" makes Ren'Py look up a variable
+        named Submod and raise NameError; see issue #3.
+
+        IN:
+            text -> str:
+                Text to escape.
+
+        OUT:
+            str:
+                The same text with [ and { doubled.
+        """
+
+        return text.replace("{", "{{").replace("[", "[[")
+
     def msgbox(text):
         """
         Convenience function for calling dialog screen with specified text.
@@ -57,9 +79,9 @@ init python in _fom_wtf_screens:
             # Point at the exact line when we know it, at the file alone
             # otherwise
             if _line is None:
-                location = _file
+                location = __escape(_file)
             else:
-                location = "{0}:{1}".format(_file, _line)
+                location = "{0}:{1}".format(__escape(_file), _line)
 
             if metadata is None:
                 # If no metadata found and file path has just one slash,
@@ -94,9 +116,9 @@ init python in _fom_wtf_screens:
 
             else:
                 # Assign metadata to vars for brevity
-                submod = metadata["name"]
-                version = metadata["version"]
-                author = metadata["author"]
+                submod = __escape(metadata["name"])
+                version = __escape(metadata["version"])
+                author = __escape(metadata["author"])
 
                 # Make up an informative message about topic and owning submod
                 message = (
@@ -109,10 +131,19 @@ init python in _fom_wtf_screens:
             # Check if topic has event prompt and it's not empty (if it's empty,
             # it is the same as event label)
             if bool(ev.prompt) and ev.prompt != ev.eventlabel:
+                # Topic prompts routinely contain [player] and friends and are
+                # meant to interpolate, so resolve them first -- but fall back
+                # to the prompt as authored should it reference anything that
+                # isn't defined, rather than taking the whole dialog down
+                try:
+                    prompt = renpy.substitute(ev.prompt)
+                except Exception:
+                    prompt = ev.prompt
+
                 # Construct a message with info
                 topic_title = (
                     _("The topic is called {{i}}{0}{{/i}}")
-                    .format(ev.prompt)
+                    .format(__escape(prompt))
                 )
 
                 # If topic is random, tell so
