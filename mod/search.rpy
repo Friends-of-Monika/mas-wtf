@@ -1,6 +1,3 @@
-# search.rpy contains logic for locating script file and submod metadata as
-# well as processing AST, both Ren'Py and Python.
-#
 # This file is part of Where is That From (see link below):
 # https://github.com/friends-of-monika/mas-wtf
 

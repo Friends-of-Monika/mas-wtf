@@ -1,24 +1,20 @@
-# screens.rpy contains convenience functions for working with MAS screens
-# and code that performs GUI related tasks such as dialog window showing.
-#
 # This file is part of Where is That From (see link below):
 # https://github.com/friends-of-monika/mas-wtf
 
 init python in _fom_wtf_screens:
-
-    import store
     from store import Return
-
+    import store
 
     def msgbox(text):
         """
         Convenience function for calling dialog screen with specified text.
         Shows a simple info dialog window with OK button.
         """
-
-        renpy.invoke_in_new_context(renpy.call_screen, "dialog",
-                                    message=text, ok_action=Return())
-
+        renpy.invoke_in_new_context(
+            renpy.call_screen, "dialog",
+            message=text,
+            ok_action=Return()
+        )
 
     def topic_info(ev, res):
         """
