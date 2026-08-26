@@ -82,12 +82,11 @@ can at least tell what file contains the topic you're currently looking at.
 
 ## 💬 Join our Discord
 
-We're up to chat! Come join submod author's Discord server [here][8].
+We're up to chat! Come join submod author's Discord server [here][9].
 
-[![Discord server invitation][10]][8]
+[![Discord server invitation][10]][9]
 
 [6]: https://github.com/friends-of-monika/mas-wtf/releases/latest
-[8]: https://dcache.me/discord
 [9]: https://mon.icu/discord
 [10]: https://discordapp.com/api/guilds/1029849988953546802/widget.png?style=banner3
 [12]: https://github.com/friends-of-monika/mas-wtf
