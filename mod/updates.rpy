@@ -1,8 +1,15 @@
+label friends_of_monika_where_is_that_from_v1_0_1(version="v1_0_1"):
+    return
+
 label friends_of_monika_where_is_that_from_v1_1_0(version="v1_1_0"):
+    # we messed up here :c
+    return
+
+label friends_of_monika_where_is_that_from_v1_1_1(version="v1_1_1"):
     python:
         # this should never under any circumstances possibly return
         # any other folder than: "game/Submods/Where is That From/lib"
-        lib_dir = os.path.join(basedir, "lib")
+        lib_dir = os.path.join(_fom_wtf.basedir, "lib")
 
         # so basically it's SAFE, HOWEVER, for good measure let's
         # make sure that we aren't targeting something too broad
