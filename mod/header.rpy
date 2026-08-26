@@ -6,9 +6,10 @@ init -990 python in mas_submod_utils:
         author="Friends of Monika",
         name="Where is That From",
         description=_("Easily find out what submod owns a topic"),
-        version="1.1.0",
+        version="1.1.1",
         version_updates={
-            "friends_of_monika_where_is_that_from_v1_0_1": "friends_of_monika_where_is_that_from_v1_1_0"
+            "friends_of_monika_where_is_that_from_v1_0_1": "friends_of_monika_where_is_that_from_v1_1_0",
+            "friends_of_monika_where_is_that_from_v1_1_0": "friends_of_monika_where_is_that_from_v1_1_1"
         }
     )
 
